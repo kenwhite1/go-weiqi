@@ -1,0 +1,45 @@
+import { getInitData } from './telegram'
+import type { Profile, RoomStateDto, Difficulty } from '@shared/types'
+
+let token: string | null = sessionStorage.getItem('go_jwt')
+
+async function req<T>(path: string, body?: unknown): Promise<T> {
+  const res = await fetch(`/api${path}`, {
+    method: body === undefined ? 'GET' : 'POST',
+    headers: {
+      'content-type': 'application/json',
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  })
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok) throw Object.assign(new Error(json.error ?? 'request_failed'), { status: res.status, data: json })
+  return json as T
+}
+
+export interface LeaderRow { name: string; wins: number; best: number }
+
+export const api = {
+  async auth(): Promise<{ profile: Profile; startParam: string | null; botUsername: string }> {
+    const r = await req<{ token: string; profile: Profile; startParam: string | null; botUsername: string }>('/auth', {
+      initData: getInitData(),
+    })
+    token = r.token
+    sessionStorage.setItem('go_jwt', r.token)
+    return { profile: r.profile, startParam: r.startParam, botUsername: r.botUsername }
+  },
+  profile: () => req<{ profile: Profile }>('/profile'),
+  leaderboard: () => req<{ top: LeaderRow[] }>('/leaderboard'),
+
+  solo: (difficulty: Difficulty) => req<RoomStateDto>('/solo', { difficulty }),
+  roomCreate: (difficulty: Difficulty) => req<RoomStateDto>('/room/create', { difficulty }),
+  roomQuick: () => req<RoomStateDto>('/room/quick', {}),
+  roomJoin: (code: string) => req<RoomStateDto>('/room/join', { code }),
+  roomDifficulty: (code: string, difficulty: Difficulty) => req<RoomStateDto>(`/room/${code}/difficulty`, { difficulty }),
+  roomState: (code: string) => req<RoomStateDto>(`/room/${code}`),
+  roomStart: (code: string) => req<RoomStateDto>(`/room/${code}/start`, {}),
+  roomPlay: (code: string, point: number) => req<RoomStateDto>(`/room/${code}/play`, { point }),
+  roomPass: (code: string) => req<RoomStateDto>(`/room/${code}/pass`, {}),
+  roomResign: (code: string) => req<RoomStateDto>(`/room/${code}/resign`, {}),
+  roomLeave: (code: string) => req<{ ok: boolean }>(`/room/${code}/leave`, {}),
+}
