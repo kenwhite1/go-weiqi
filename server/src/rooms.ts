@@ -22,6 +22,8 @@ import type {
   RoomStateDto, RoomPlayerDto, StandingDto, GameEventDto, EventKind, StoneColor,
 } from '../../shared/types'
 import { recordResult } from './profiles'
+import { reportMatch } from './gg'
+import type { MatchMode } from '../../shared/gg'
 
 interface Seat {
   id: string // 'u<tgid>' у людей, 'bot1'... у ботов
@@ -292,6 +294,8 @@ function finalize(room: Room): void {
 
   if (!room.scored && game) {
     room.scored = true
+    const humans = room.seats.filter(s => !s.isBot && s.tgId != null)
+    const mode: MatchMode = room.solo ? 'solo' : room.quick ? 'multi' : 'friends'
     for (const seat of room.seats) {
       // Учитываем и тех, кто вышел из партии: счёт уже посчитан, а Mini App в
       // Telegram часто сворачивают, иначе честная победа пропала бы.
@@ -299,6 +303,32 @@ function finalize(room: Room): void {
       const won = !room.draw && seat.id === room.winnerId
       const captures = game.captures[seat.gameIndex] ?? 0
       recordResult(seat.tgId, room.solo ? 'solo' : 'online', won, captures)
+      // Рапорт хабу: room.scored выше гарантирует один раз на партию, а ключ
+      // идемпотентности (код+время создания комнаты) — что повтор не доплатит.
+      const mine = seat.gameIndex === 0 ? room.finalBlack : room.finalWhite
+      const theirs = seat.gameIndex === 0 ? room.finalWhite : room.finalBlack
+      reportMatch({
+        userId: seat.tgId,
+        idempotencyKey: `go-${room.code}-${room.createdAt}-${seat.tgId}`,
+        result: room.draw ? 'draw' : won ? 'win' : 'loss',
+        placement: seat.place,
+        players: room.seats.length,
+        humanPlayers: humans.length,
+        score: mine,
+        mode,
+        opponents: humans.filter(s => s.tgId !== seat.tgId).map(s => s.tgId as number),
+        stats: won
+          ? {
+              // «Безупречно»: соперник не снял ни одного нашего камня.
+              ...(game.captures[seat.gameIndex ^ 1] === 0 ? { flawless: true } : {}),
+              // «Молния»: партия уложилась меньше чем в 25 ходов.
+              ...(game.moveCount < 25 ? { fast: true } : {}),
+              // «Территория»: перевес 50+ очков. Только у доигранной партии —
+              // при сдаче счёт на доске исход не решал, флаг был бы враньём.
+              ...(!room.byResign && mine - theirs >= 50 ? { signature: true } : {}),
+            }
+          : undefined,
+      })
     }
   }
   room.version++
