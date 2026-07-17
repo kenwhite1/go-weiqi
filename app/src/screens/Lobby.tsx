@@ -4,6 +4,7 @@ import { shareLink, haptic } from '../telegram'
 import { APP_NAME } from '../brand'
 import { faceFor } from '../faces'
 import { DIFFICULTIES } from '@shared/difficulty'
+import { t } from '../i18n'
 
 export function Lobby() {
   const room = useStore(s => s.room)
@@ -22,12 +23,12 @@ export function Lobby() {
       <div className="lobby rise">
         <div className="page-head" style={{ alignSelf: 'flex-start' }}>
           <button className="round-btn" onClick={() => useStore.getState().go('home')}>‹</button>
-          <h1>Войти по коду</h1>
+          <h1>{t('Войти по коду')}</h1>
         </div>
         <div className="field" style={{ marginTop: 8 }}>
           <input
             className="code-input"
-            placeholder="КОД"
+            placeholder={t('КОД')}
             value={code}
             maxLength={4}
             autoCapitalize="characters"
@@ -35,7 +36,7 @@ export function Lobby() {
           />
           {joinError && <p style={{ color: 'var(--red-deep)', textAlign: 'center', fontWeight: 800, marginTop: 12 }}>{joinError}</p>}
           <button className="btn block lg" style={{ marginTop: 18 }} disabled={code.length !== 4 || busy} onClick={() => joinRoom(code)}>
-            {busy ? 'Входим…' : 'Войти в игру'}
+            {busy ? t('Входим…') : t('Войти в игру')}
           </button>
         </div>
       </div>
@@ -48,24 +49,24 @@ export function Lobby() {
       <div className="lobby rise">
         <div className="page-head" style={{ alignSelf: 'flex-start' }}>
           <button className="round-btn" onClick={leaveGame}>‹</button>
-          <h1>Быстрая игра</h1>
+          <h1>{t('Быстрая игра')}</h1>
         </div>
         <div className="code-card" style={{ textAlign: 'center' }}>
           <div className="searching-bob" style={{ fontSize: 46 }}>⚡</div>
-          <h2 style={{ color: 'var(--ink)', marginTop: 6 }}>Ищем соперника<span className="dots-anim" /></h2>
-          <p style={{ color: 'var(--ink-soft)', fontWeight: 800, marginTop: 6 }}>Можно начать сейчас или подождать пару секунд</p>
+          <h2 style={{ color: 'var(--ink)', marginTop: 6 }}>{t('Ищем соперника')}<span className="dots-anim" /></h2>
+          <p style={{ color: 'var(--ink-soft)', fontWeight: 800, marginTop: 6 }}>{t('Можно начать сейчас или подождать пару секунд')}</p>
         </div>
         <div className="seatlist">
           {room.players.map(p => (
             <div className="seat" key={p.id}>
               <div className="av">{p.id === room.yourSeatId ? '🙂' : faceFor(p.id)}</div>
               <div className="nm">{p.name}</div>
-              <div className="tag wait">в игре</div>
+              <div className="tag wait">{t('в игре')}</div>
             </div>
           ))}
         </div>
         <button className="btn block lg" style={{ maxWidth: 420, marginTop: 16 }} disabled={busy} onClick={startRoom}>
-          {busy ? 'Начинаем…' : 'Начать сейчас ⚡'}
+          {busy ? t('Начинаем…') : t('Начать сейчас ⚡')}
         </button>
       </div>
     )
@@ -78,36 +79,36 @@ export function Lobby() {
   const share = () => {
     haptic('tap')
     const link = `https://t.me/${botUsername}?startapp=room_${room.code}`
-    shareLink(link, `Заходи ко мне в ${APP_NAME}. Код комнаты ${room.code} ⚫️⚪️`)
+    shareLink(link, `${t('Заходи ко мне в')} ${APP_NAME}. ${t('Код комнаты')} ${room.code} ⚫️⚪️`)
   }
 
   return (
     <div className="lobby rise">
       <div className="page-head" style={{ alignSelf: 'flex-start' }}>
         <button className="round-btn" onClick={leaveGame}>‹</button>
-        <h1>Комната</h1>
+        <h1>{t('Комната')}</h1>
       </div>
 
       <div className="code-card">
-        <div style={{ fontWeight: 800, color: 'var(--ink-soft)' }}>Поделись кодом</div>
+        <div style={{ fontWeight: 800, color: 'var(--ink-soft)' }}>{t('Поделись кодом')}</div>
         <div className="code-big">{room.code}</div>
-        <button className="btn accent block" style={{ marginTop: 8 }} onClick={share}>Позвать друга ↗</button>
+        <button className="btn accent block" style={{ marginTop: 8 }} onClick={share}>{t('Позвать друга ↗')}</button>
       </div>
 
       <div className="cat-block">
-        <div className="cat-block-title">Сложность бота</div>
+        <div className="cat-block-title">{t('Сложность бота')}</div>
         {isHost ? (
           <div className="cat-pills">
             {DIFFICULTIES.map(d => (
               <button key={d.d} className={`cat-pill ${room.difficulty === d.d ? 'on' : ''}`} onClick={() => setDifficulty(d.d)}>
                 <span>{d.emoji}</span>
-                <span>{d.t}</span>
+                <span>{t(d.t)}</span>
               </button>
             ))}
           </div>
         ) : (
           <div className="cat-readonly">
-            {DIFFICULTIES.find(d => d.d === room.difficulty)?.emoji} {DIFFICULTIES.find(d => d.d === room.difficulty)?.t}
+            {DIFFICULTIES.find(d => d.d === room.difficulty)?.emoji} {t(DIFFICULTIES.find(d => d.d === room.difficulty)?.t ?? '')}
           </div>
         )}
       </div>
@@ -117,27 +118,27 @@ export function Lobby() {
           <div className="seat" key={p.id}>
             <div className="av">{p.isBot ? '🤖' : p.id === room.yourSeatId ? '🙂' : faceFor(p.id)}</div>
             <div className="nm">{p.name}</div>
-            {p.isHost ? <div className="tag host">ХОЗЯИН</div> : p.isBot ? <div className="tag bot">БОТ</div> : <div className="tag wait">готов</div>}
+            {p.isHost ? <div className="tag host">{t('ХОЗЯИН')}</div> : p.isBot ? <div className="tag bot">{t('БОТ')}</div> : <div className="tag wait">{t('готов')}</div>}
           </div>
         ))}
         {humans.length < room.maxPlayers && (
           <div className="seat" style={{ opacity: 0.6 }}>
             <div className="av">＋</div>
-            <div className="nm" style={{ fontWeight: 800 }}>Ждём соперника<span className="dots-anim" /></div>
+            <div className="nm" style={{ fontWeight: 800 }}>{t('Ждём соперника')}<span className="dots-anim" /></div>
           </div>
         )}
       </div>
 
       <p className="hint" style={{ marginTop: 16, textAlign: 'center', color: 'var(--ink-soft)' }}>
-        Пустое место займёт бот, когда начнёшь.
+        {t('Пустое место займёт бот, когда начнёшь.')}
       </p>
 
       {isHost ? (
         <button className="btn block lg" style={{ maxWidth: 420, marginTop: 8 }} disabled={busy} onClick={startRoom}>
-          {busy ? 'Расставляем…' : 'Начать игру ⚫️⚪️'}
+          {busy ? t('Расставляем…') : t('Начать игру ⚫️⚪️')}
         </button>
       ) : (
-        <p className="hint" style={{ marginTop: 8, color: 'var(--ink-soft)' }}>Ждём, пока хозяин начнёт<span className="dots-anim" /></p>
+        <p className="hint" style={{ marginTop: 8, color: 'var(--ink-soft)' }}>{t('Ждём, пока хозяин начнёт')}<span className="dots-anim" /></p>
       )}
     </div>
   )

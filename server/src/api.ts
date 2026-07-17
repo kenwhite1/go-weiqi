@@ -4,7 +4,7 @@ import { validateInitData, issueToken, verifyToken } from './auth'
 import type { Env } from './env'
 import { BOT_USERNAME } from './env'
 import { getOrCreateUser, getProfile, topPlayers } from './profiles'
-import { storeLaunchToken } from './gg'
+import { storeLaunchToken, withHubCoins } from './gg'
 import {
   createSolo, createRoom, joinRoom, quickMatch, startRoom, setRoomDifficulty,
   playMove, passMove, resignMove, getRoomState, leaveRoom,
@@ -24,7 +24,8 @@ api.post('/auth', async c => {
   getOrCreateUser(v.user.id, name, v.user.username)
   storeLaunchToken(v.user.id, v.startParam)
   const token = await issueToken(v.user.id)
-  return c.json({ token, profile: getProfile(v.user.id), startParam: v.startParam, botUsername: BOT_USERNAME })
+  const profile = await withHubCoins(v.user.id, getProfile(v.user.id))
+  return c.json({ token, profile, startParam: v.startParam, botUsername: BOT_USERNAME })
 })
 
 // Лёгкий лимит на пишущие запросы (на пользователя, скользящее окно). Опрос
@@ -57,7 +58,7 @@ api.use('/*', async (c, next) => {
   return next()
 })
 
-api.get('/profile', c => c.json({ profile: getProfile(c.get('uid')) }))
+api.get('/profile', async c => c.json({ profile: await withHubCoins(c.get('uid'), getProfile(c.get('uid'))) }))
 api.get('/leaderboard', c => c.json({ top: topPlayers(20) }))
 
 const difficultySchema = z.enum(['easy', 'medium', 'hard'])

@@ -3,6 +3,7 @@ import type { Profile, RoomStateDto, GameEventDto, Difficulty } from '@shared/ty
 import { api } from './api'
 import { haptic } from './telegram'
 import { playSfx } from './sound'
+import { t } from './i18n'
 
 type Screen = 'home' | 'rules' | 'leaderboard' | 'lobby' | 'game'
 
@@ -69,17 +70,18 @@ function moveError(e: unknown): string {
 
 function eventToast(e: GameEventDto): string {
   switch (e.kind) {
-    case 'pass': return `${e.name} пропускает ход`
-    case 'resign': return `${e.name} сдаётся`
-    case 'timeout': return `${e.name} не успел походить`
+    case 'pass': return `${e.name} ${t('пропускает ход')}`
+    case 'resign': return `${e.name} ${t('сдаётся')}`
+    case 'timeout': return `${e.name} ${t('не успел походить')}`
     default: return ''
   }
 }
 
 export const useStore = create<S>((set, get) => {
   function toast(text: string) {
-    set({ toast: text })
-    setTimeout(() => { if (get().toast === text) set({ toast: null }) }, 2200)
+    const msg = t(text)
+    set({ toast: msg })
+    setTimeout(() => { if (get().toast === msg) set({ toast: null }) }, 2200)
   }
 
   function applyRoom(next: RoomStateDto): void {
@@ -180,7 +182,7 @@ export const useStore = create<S>((set, get) => {
         lastEventSeq = st.lastEvent?.seq ?? 0
         startPoll(st.code)
       } catch {
-        set({ busy: false, joinError: 'Не удалось начать игру. Проверь связь.' })
+        set({ busy: false, joinError: t('Не удалось начать игру. Проверь связь.') })
       }
     },
 
@@ -192,7 +194,7 @@ export const useStore = create<S>((set, get) => {
         lastEventSeq = st.lastEvent?.seq ?? 0
         startPoll(st.code)
       } catch {
-        set({ busy: false, joinError: 'Не удалось подобрать игру. Проверь связь.' })
+        set({ busy: false, joinError: t('Не удалось подобрать игру. Проверь связь.') })
       }
     },
 
@@ -203,7 +205,7 @@ export const useStore = create<S>((set, get) => {
         set({ mode: 'online', room: st, screen: 'lobby', busy: false })
         startPoll(st.code)
       } catch {
-        set({ busy: false, joinError: 'Не удалось создать комнату. Проверь связь.' })
+        set({ busy: false, joinError: t('Не удалось создать комнату. Проверь связь.') })
       }
     },
 
@@ -219,10 +221,10 @@ export const useStore = create<S>((set, get) => {
         set({
           busy: false,
           joinError:
-            err === 'no_room' ? 'Нет комнаты с таким кодом.'
-              : err === 'already_started' ? 'Игра уже началась.'
-              : err === 'full' ? 'В комнате нет мест.'
-              : 'Не удалось войти.',
+            err === 'no_room' ? t('Нет комнаты с таким кодом.')
+              : err === 'already_started' ? t('Игра уже началась.')
+              : err === 'full' ? t('В комнате нет мест.')
+              : t('Не удалось войти.'),
         })
       }
     },

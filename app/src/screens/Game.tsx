@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store'
 import { Scene } from '../game/Scene'
 import { Board } from '../game/Board'
+import { t } from '../i18n'
 
 function fmt(ms: number): string {
   const s = Math.max(0, Math.ceil(ms / 1000))
@@ -35,7 +36,7 @@ export function Game() {
     return (
       <div className="table">
         <Scene />
-        <div className="feltwrap"><p style={{ color: 'var(--chalk-dim)', fontWeight: 900 }}>Расставляем доску<span className="dots-anim" /></p></div>
+        <div className="feltwrap"><p style={{ color: 'var(--chalk-dim)', fontWeight: 900 }}>{t('Расставляем доску')}<span className="dots-anim" /></p></div>
       </div>
     )
   }
@@ -52,14 +53,14 @@ export function Game() {
       <Scene />
 
       <div className="topbar">
-        <button className="round-btn dark" onClick={leaveGame} aria-label="Выйти">‹</button>
+        <button className="round-btn dark" onClick={leaveGame} aria-label={t('Выйти')}>‹</button>
         <span className="badge mid">
-          {room.status === 'finished' ? 'Партия окончена'
-            : youAreCurrent ? 'Твой ход'
-            : current ? `Ходит ${current.name}` : 'Партия'}
+          {room.status === 'finished' ? t('Партия окончена')
+            : youAreCurrent ? t('Твой ход')
+            : current ? `${t('Ходит')} ${current.name}` : t('Партия')}
         </span>
         <span className="badge">
-          {timeLeft != null ? <span className={lowTime ? 'low-txt' : ''}>⏱ {fmt(timeLeft)}</span> : `коми ${room.komi}`}
+          {timeLeft != null ? <span className={lowTime ? 'low-txt' : ''}>⏱ {fmt(timeLeft)}</span> : `${t('коми')} ${room.komi}`}
         </span>
       </div>
 
@@ -73,10 +74,10 @@ export function Game() {
             {p.id === room.currentSeatId && playing && <span className="pl-turn-dot" />}
             <div className="pl-top">
               <span className={`stone-chip ${p.color}`} />
-              <span className="pl-name">{p.id === room.yourSeatId ? 'Ты' : p.name}</span>
+              <span className="pl-name">{p.id === room.yourSeatId ? t('Ты') : p.name}</span>
             </div>
             <span className="pl-score">{p.captures}</span>
-            <span className="pl-sub">{p.color === 'black' ? 'чёрные' : 'белые'}</span>
+            <span className="pl-sub">{p.color === 'black' ? t('чёрные') : t('белые')}</span>
           </div>
         ))}
       </div>
@@ -85,20 +86,20 @@ export function Game() {
 
       <div className="turn-hint">
         {room.status === 'finished' ? (
-          <span className="wait">Считаем территорию<span className="dots-anim" /></span>
+          <span className="wait">{t('Считаем территорию')}<span className="dots-anim" /></span>
         ) : oppPassed ? (
-          <span className="pass-note">Соперник спасовал. Спасуй и ты, чтобы закончить</span>
+          <span className="pass-note">{t('Соперник спасовал. Спасуй и ты, чтобы закончить')}</span>
         ) : youAreCurrent ? (
-          <span className={lowTime ? 'low' : ''}>Твой ход, ставь камень на пересечение</span>
+          <span className={lowTime ? 'low' : ''}>{t('Твой ход, ставь камень на пересечение')}</span>
         ) : (
-          <span className="wait">Ждём ход соперника<span className="dots-anim" /></span>
+          <span className="wait">{t('Ждём ход соперника')}<span className="dots-anim" /></span>
         )}
       </div>
 
       {playing ? (
         <div className="game-actions">
-          <button className="btn ghost" disabled={!youAreCurrent || busy} onClick={pass}>Пас</button>
-          <button className="btn ghost" onClick={() => setConfirmResign(true)}>Сдаться</button>
+          <button className="btn ghost" disabled={!youAreCurrent || busy} onClick={pass}>{t('Пас')}</button>
+          <button className="btn ghost" onClick={() => setConfirmResign(true)}>{t('Сдаться')}</button>
         </div>
       ) : (
         <div className="game-actions-fill" />
@@ -109,12 +110,12 @@ export function Game() {
           <div className="sheet pop" style={{ maxWidth: 360, textAlign: 'center' }} onClick={e => e.stopPropagation()}>
             <div className="sheet-grip" />
             <div style={{ fontSize: 40 }}>🏳️</div>
-            <h2 style={{ marginTop: 4 }}>Сдаться?</h2>
+            <h2 style={{ marginTop: 4 }}>{t('Сдаться?')}</h2>
             <p style={{ color: 'var(--ink-soft)', fontWeight: 800, margin: '8px 0 16px' }}>
-              Партия засчитается сопернику как победа.
+              {t('Партия засчитается сопернику как победа.')}
             </p>
-            <button className="btn danger block lg" onClick={() => { setConfirmResign(false); resign() }}>Сдаться</button>
-            <button className="btn ghost block" style={{ marginTop: 10 }} onClick={() => setConfirmResign(false)}>Продолжить игру</button>
+            <button className="btn danger block lg" onClick={() => { setConfirmResign(false); resign() }}>{t('Сдаться')}</button>
+            <button className="btn ghost block" style={{ marginTop: 10 }} onClick={() => setConfirmResign(false)}>{t('Продолжить игру')}</button>
           </div>
         </div>
       )}

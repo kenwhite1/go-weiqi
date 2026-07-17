@@ -8,10 +8,12 @@ import { Leaderboard } from './screens/Leaderboard'
 import { Logo } from './screens/Logo'
 import { APP_NAME } from './brand'
 import { DIFFICULTIES, type Difficulty } from '@shared/difficulty'
+import { t, useLang } from './i18n'
 
 const CONFETTI = ['#2f9e6f', '#e8a23d', '#8fe0bb', '#f4cf86', '#fbf3df']
 
 export function App() {
+  useLang() // re-render whole tree on language switch
   const ready = useStore(s => s.ready)
   const screen = useStore(s => s.screen)
   const init = useStore(s => s.init)
@@ -25,7 +27,7 @@ export function App() {
           <div className="brand" style={{ animation: 'pop-in .5s ease both' }}>
             <Logo />
             <div className="brand-name">{APP_NAME}</div>
-            <div className="brand-tag">Расставляем доску<span className="dots-anim" /></div>
+            <div className="brand-tag">{t('Расставляем доску')}<span className="dots-anim" /></div>
           </div>
         </div>
       </div>
@@ -76,27 +78,27 @@ function SetupSheet({ kind }: { kind: 'solo' | 'create' }) {
       <div className="sheet pop" onClick={e => e.stopPropagation()}>
         <div className="sheet-grip" />
         <div style={{ fontSize: 42, textAlign: 'center' }}>{kind === 'solo' ? '⚫️⚪️' : '👥'}</div>
-        <h2 style={{ textAlign: 'center', marginTop: 2 }}>{kind === 'solo' ? 'Одиночная игра' : 'Игра с другом'}</h2>
+        <h2 style={{ textAlign: 'center', marginTop: 2 }}>{kind === 'solo' ? t('Одиночная игра') : t('Игра с другом')}</h2>
 
-        <div className="setup-label">Сложность соперника</div>
+        <div className="setup-label">{t('Сложность соперника')}</div>
         <div className="setup-grid">
           {DIFFICULTIES.map(d => (
             <button key={d.d} className={`setup-card ${diff === d.d ? 'on' : ''}`} onClick={() => setDiff(d.d)}>
               <span className="setup-emoji">{d.emoji}</span>
-              <span className="setup-t">{d.t}</span>
-              <span className="setup-s">{d.s}</span>
+              <span className="setup-t">{t(d.t)}</span>
+              <span className="setup-s">{t(d.s)}</span>
             </button>
           ))}
         </div>
 
         {kind === 'create' && (
           <p className="hint" style={{ textAlign: 'center', color: 'var(--ink-soft)', marginTop: 14 }}>
-            Создашь комнату, поделишься кодом. Не дождёшься друга, место займёт бот.
+            {t('Создашь комнату, поделишься кодом. Не дождёшься друга, место займёт бот.')}
           </p>
         )}
 
         <button className="btn block lg" style={{ marginTop: 18 }} disabled={busy} onClick={go}>
-          {kind === 'solo' ? 'Играть ⚫️⚪️' : busy ? 'Создаём…' : 'Создать комнату 👥'}
+          {kind === 'solo' ? t('Играть ⚫️⚪️') : busy ? t('Создаём…') : t('Создать комнату 👥')}
         </button>
       </div>
     </div>
@@ -115,13 +117,13 @@ function ResultModal() {
   const myCaptures = result.standings.find(p => p.id === yourId)?.captures ?? 0
   const reward = 5 + myCaptures + (won ? 25 : 0)
 
-  const title = draw ? 'Ничья!' : won ? 'Ты выиграл!' : 'В этот раз мимо'
-  const scoreLine = `Чёрные ${result.blackScore} : Белые ${result.whiteScore}`
+  const title = draw ? t('Ничья!') : won ? t('Ты выиграл!') : t('В этот раз мимо')
+  const scoreLine = `${t('Чёрные')} ${result.blackScore} : ${t('Белые')} ${result.whiteScore}`
   const sub = draw
-    ? 'Очки разделились поровну.'
+    ? t('Очки разделились поровну.')
     : result.resign
-      ? won ? 'Соперник сдался.' : 'Ты сдался.'
-      : `${scoreLine} (с коми)`
+      ? won ? t('Соперник сдался.') : t('Ты сдался.')
+      : `${scoreLine} ${t('(с коми)')}`
 
   return (
     <div className="scrim center">
@@ -149,8 +151,8 @@ function ResultModal() {
             {result.standings.map(p => (
               <div className={`stand-row ${p.id === yourId ? 'me' : ''}`} key={p.id}>
                 <span className={`stone-chip ${p.color}`} />
-                <span className="stand-name">{p.id === yourId ? 'Ты' : p.name}</span>
-                <span className="stand-cap">в плену {p.captures}</span>
+                <span className="stand-name">{p.id === yourId ? t('Ты') : p.name}</span>
+                <span className="stand-cap">{t('в плену')} {p.captures}</span>
                 <span className="stand-score">{result.resign ? '·' : p.score}</span>
               </div>
             ))}
@@ -158,13 +160,13 @@ function ResultModal() {
         )}
 
         <div style={{ display: 'flex', justifyContent: 'center', margin: '4px 0 14px' }}>
-          <span className="coin-chip">🪙 +{reward} монет</span>
+          <span className="coin-chip">🪙 +{reward} {t('монет')}</span>
         </div>
 
         <button className="btn block lg" onClick={mode === 'solo' ? () => startSolo(difficulty) : leaveGame}>
-          {mode === 'solo' ? 'Играть ещё ⚫️⚪️' : 'В меню'}
+          {mode === 'solo' ? t('Играть ещё ⚫️⚪️') : t('В меню')}
         </button>
-        <button className="btn ghost block" style={{ marginTop: 10 }} onClick={leaveGame}>Домой</button>
+        <button className="btn ghost block" style={{ marginTop: 10 }} onClick={leaveGame}>{t('Домой')}</button>
       </div>
     </div>
   )

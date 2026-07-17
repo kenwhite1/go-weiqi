@@ -1,5 +1,6 @@
 import { useStore } from '../store'
 import type { StoneColor } from '@shared/types'
+import { t } from '../i18n'
 
 const SIZE = 9
 const STAR = [[2, 2], [6, 2], [2, 6], [6, 6], [4, 4]] // хоси (звёздные пункты) на 9x9
@@ -50,7 +51,7 @@ export function Board() {
               const empty = color === null
               const isKo = koPoint === i
               const live = canPlay && empty && !isKo
-              const t = empty ? terr[i] : 0
+              const terrMark = empty ? terr[i] : 0
               return (
                 <button
                   key={i}
@@ -58,7 +59,7 @@ export function Board() {
                   style={style}
                   onClick={() => live && play(i)}
                   disabled={!live}
-                  aria-label={color ? (color === 'black' ? 'Чёрный камень' : 'Белый камень') : live ? 'Поставить камень' : 'Пустой пункт'}
+                  aria-label={color ? (color === 'black' ? t('Чёрный камень') : t('Белый камень')) : live ? t('Поставить камень') : t('Пустой пункт')}
                 >
                   {color && (
                     <span className={`stone ${color}`}>
@@ -68,8 +69,8 @@ export function Board() {
                   {removedSet.has(i) && empty && <span className="cap-ghost" />}
                   {live && <span className={`place-ghost ${ghostColor}`} />}
                   {isKo && empty && <span className="ko-mark" />}
-                  {t === 1 && <span className="terr black" />}
-                  {t === 2 && <span className="terr white" />}
+                  {terrMark === 1 && <span className="terr black" />}
+                  {terrMark === 2 && <span className="terr white" />}
                 </button>
               )
             })}

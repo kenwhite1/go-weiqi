@@ -304,7 +304,7 @@ function finalize(room: Room): void {
       const captures = game.captures[seat.gameIndex] ?? 0
       recordResult(seat.tgId, room.solo ? 'solo' : 'online', won, captures)
       // Рапорт хабу: room.scored выше гарантирует один раз на партию, а ключ
-      // идемпотентности (код+время создания комнаты) — что повтор не доплатит.
+      // идемпотентности (код+время создания комнаты) - что повтор не доплатит.
       const mine = seat.gameIndex === 0 ? room.finalBlack : room.finalWhite
       const theirs = seat.gameIndex === 0 ? room.finalWhite : room.finalBlack
       reportMatch({
@@ -323,7 +323,7 @@ function finalize(room: Room): void {
               ...(game.captures[seat.gameIndex ^ 1] === 0 ? { flawless: true } : {}),
               // «Молния»: партия уложилась меньше чем в 25 ходов.
               ...(game.moveCount < 25 ? { fast: true } : {}),
-              // «Территория»: перевес 50+ очков. Только у доигранной партии —
+              // «Территория»: перевес 50+ очков. Только у доигранной партии -
               // при сдаче счёт на доске исход не решал, флаг был бы враньём.
               ...(!room.byResign && mine - theirs >= 50 ? { signature: true } : {}),
             }

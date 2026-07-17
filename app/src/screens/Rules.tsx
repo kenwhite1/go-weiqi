@@ -1,4 +1,5 @@
 import { useStore } from '../store'
+import { t } from '../i18n'
 
 const RULES = [
   { ic: '⚫️', t: 'Ставь камень', b: 'Доска 9 на 9. В свой ход ставь камень на любое свободное пересечение линий. Камни не двигаются. Чёрные ходят первыми.' },
@@ -16,14 +17,14 @@ export function Rules() {
     <div className="page">
       <div className="page-head">
         <button className="round-btn" onClick={() => go('home')}>‹</button>
-        <h1>Как играть</h1>
+        <h1>{t('Как играть')}</h1>
       </div>
       {RULES.map((r, i) => (
         <div className="rule" key={i}>
           <div className="ic">{r.ic}</div>
           <div>
-            <div className="rt">{r.t}</div>
-            <div className="rb">{r.b}</div>
+            <div className="rt">{t(r.t)}</div>
+            <div className="rb">{t(r.b)}</div>
           </div>
         </div>
       ))}
