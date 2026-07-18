@@ -10,7 +10,7 @@ import { APP_NAME } from './brand'
 import { DIFFICULTIES, type Difficulty } from '@shared/difficulty'
 import { t, useLang } from './i18n'
 
-const CONFETTI = ['#2f9e6f', '#e8a23d', '#8fe0bb', '#f4cf86', '#fbf3df']
+const CONFETTI = ['#7fb069', '#f2a93b', '#8fe0bb', '#f8d77e', '#fffaf0']
 
 export function App() {
   useLang() // re-render whole tree on language switch

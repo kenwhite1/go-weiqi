@@ -9,20 +9,20 @@
    золото, последний ход помечен фирменным золотом.
    ============================================================ */
 :root {
-  --bg: #ece2cd;
-  --bg-deep: #ddcfb0;
-  --cream: #fbf6ea;
-  --cream-shade: #f1e7d2;
-  --ink: #3c3328;
-  --ink-soft: #8a7a64;
+  --bg: #f3e2bc;
+  --bg-deep: #eed9a9;
+  --cream: #fffaf0;
+  --cream-shade: #f7ecd9;
+  --ink: #5c4326;
+  --ink-soft: #9b8466;
   --brown: #8a5a33;
   --brown-deep: #6f4322;
-  --gold: #f4cf86;
-  --accent: #e8a23d;
-  --accent-deep: #cf8417;
+  --gold: #f8d77e;
+  --accent: #f2a93b;
+  --accent-deep: #d98b1f;
 
-  --primary: #2f9e6f;  --primary-deep: #1f7a53;  --primary-light: #50c08c;
-  --red: #e15b4d;      --red-deep: #c23b2f;
+  --primary: #7fb069;  --primary-deep: #5e8e4a;  --primary-light: #93c178;
+  --red: #e2574c;      --red-deep: #b93f36;
 
   /* деревянный гобан янтарного дерева и его рама */
   --goban-1: #f0c279;
@@ -43,11 +43,11 @@
 
   --radius: 18px;
   --radius-lg: 26px;
-  --shadow-color: 30 22 10;
+  --shadow-color: 28 18 8;
   --shadow-sm: 0 1px 2px rgb(var(--shadow-color) / .10), 0 1px 1px rgb(var(--shadow-color) / .06);
   --shadow-md: 0 2px 5px rgb(var(--shadow-color) / .10), 0 6px 16px rgb(var(--shadow-color) / .14);
   --shadow-lg: 0 4px 10px rgb(var(--shadow-color) / .14), 0 14px 32px rgb(var(--shadow-color) / .22);
-  --hairline: rgba(110, 74, 44, .12);
+  --hairline: rgba(122, 79, 42, .10);
   --highlight: rgba(255, 255, 255, .55);
   --safe-top: var(--tg-content-safe-area-inset-top, 0px);
   --safe-bottom: var(--tg-safe-area-inset-bottom, 0px);
