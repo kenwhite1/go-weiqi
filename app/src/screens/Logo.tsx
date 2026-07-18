@@ -4,7 +4,7 @@
 
 export function Logo({ size = 132 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 160 160" className="brand-logo" aria-label="Го">
+    <svg width={size} height={size} viewBox="0 0 160 160" className="brand-logo" aria-label="Камушки">
       <defs>
         <radialGradient id="lg-cream" cx="0.5" cy="0.4" r="0.7">
           <stop offset="0" stopColor="#fff7e6" />
