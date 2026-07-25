@@ -26,7 +26,7 @@ export function App() {
         <div className="home" style={{ justifyContent: 'center' }}>
           <div className="brand" style={{ animation: 'pop-in .5s ease both' }}>
             <Logo />
-            <div className="brand-name">{APP_NAME}</div>
+            <div className="brand-name">{t(APP_NAME)}</div>
             <div className="brand-tag">{t('Расставляем доску')}<span className="dots-anim" /></div>
           </div>
         </div>

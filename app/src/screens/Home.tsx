@@ -33,7 +33,7 @@ export function Home() {
       </div>
       <div className="brand">
         <Logo />
-        <div className="brand-name">{APP_NAME}</div>
+        <div className="brand-name">{t(APP_NAME)}</div>
         <div className="brand-tag">{t(APP_TAG)}</div>
       </div>
 

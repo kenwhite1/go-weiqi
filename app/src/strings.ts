@@ -1,6 +1,12 @@
 // English translations keyed by the exact Russian source string.
 // Russian stays the default; English is the switchable/auto-detected second language.
 export const EN: Record<string, string> = {
+  'Камушки': 'Pebbly',
+  // Приглашение друзей из хаба (screens/HubInvite.tsx)
+  'Позвать друзей из хаба': 'Invite friends from the hub',
+  'Позвать': 'Invite',
+  'Позвали': 'Invited',
+  'Позвать всех': 'Invite everyone',
   // brand
   'Окружай камни, строй территорию': 'Surround stones, build territory',
 

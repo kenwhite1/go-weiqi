@@ -22,7 +22,7 @@ import type {
   RoomStateDto, RoomPlayerDto, StandingDto, GameEventDto, EventKind, StoneColor,
 } from '../../shared/types'
 import { recordResult } from './profiles'
-import { reportMatch } from './gg'
+import { reportMatch, userLang } from './gg'
 import type { MatchMode } from '../../shared/gg'
 
 interface Seat {
@@ -99,10 +99,12 @@ function enforceLimits(tgId: number): void {
 }
 
 const BOT_NAMES = ['Аня', 'Боря', 'Вера', 'Гена', 'Даша']
+const BOT_NAMES_EN = ['Anna', 'Bobby', 'Vera', 'Gene', 'Daisy']
 const HUMAN_NAMES = [
   'Максим', 'Лена', 'Дима', 'Соня', 'Костя', 'Вера', 'Паша', 'Юля',
   'Олег', 'Катя', 'Рома', 'Настя', 'Игорь', 'Маша', 'Артём', 'Поля',
 ]
+const HUMAN_NAMES_EN = ['Max', 'Ellie', 'Dylan', 'Sophie', 'Chris', 'Vera', 'Paul', 'Julia', 'Owen', 'Katie', 'Roman', 'Stacy', 'Isaac', 'Mia', 'Arthur', 'Polly']
 
 function newCode(): string {
   let code = ''
@@ -151,7 +153,12 @@ function colorOf(seat: Seat): StoneColor {
 
 function fillBots(room: Room): void {
   const used = new Set(room.seats.map(s => s.name))
-  const pool = room.quick ? HUMAN_NAMES : BOT_NAMES
+  // Соперники представляются на языке игрока: имя выбирается здесь, на
+  // сервере, потому что клиенту botness не раскрывается (в быстрых комнатах
+  // боты маскируются под людей), а живых игроков переименовывать нельзя.
+  const pool = userLang(room.hostTgId) === 'en'
+    ? (room.quick ? HUMAN_NAMES_EN : BOT_NAMES_EN)
+    : (room.quick ? HUMAN_NAMES : BOT_NAMES)
   const target = MAX // на двоих: одно пустое место занимает бот
   let b = room.seats.filter(s => s.isBot).length + 1
   let pi = Math.floor(Math.random() * pool.length)
