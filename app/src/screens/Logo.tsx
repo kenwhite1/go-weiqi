@@ -1,10 +1,11 @@
+import { t } from "../i18n"
 // Знак «Го»: уголок янтарного гобана на тёплом кремовом кружке, на пересечениях
 // чёрный и белый камень, между ними звёздный пункт. Тот же дух, что у соседних
 // игр: уютно и премиально.
 
 export function Logo({ size = 132 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 160 160" className="brand-logo" aria-label="Камушки">
+    <svg width={size} height={size} viewBox="0 0 160 160" className="brand-logo" aria-label={t("Камушки")}>
       <defs>
         <radialGradient id="lg-cream" cx="0.5" cy="0.4" r="0.7">
           <stop offset="0" stopColor="#fff7e6" />
