@@ -1,3 +1,4 @@
+import { getLang } from './i18n'
 import { getInitData } from './telegram'
 import type { Profile, RoomStateDto, Difficulty } from '@shared/types'
 
@@ -7,6 +8,7 @@ async function req<T>(path: string, body?: unknown): Promise<T> {
   const res = await fetch(`/api${path}`, {
     method: body === undefined ? 'GET' : 'POST',
     headers: {
+      'x-game-language': getLang(),
       'content-type': 'application/json',
       ...(token ? { authorization: `Bearer ${token}` } : {}),
     },

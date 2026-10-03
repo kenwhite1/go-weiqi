@@ -27,7 +27,7 @@ export function Home() {
               color: lang === l ? '#fff' : 'var(--ink-soft, #6b5b45)',
             }}
           >
-            {l === 'ru' ? 'РУ' : 'EN'}
+            {l === 'ru' ? 'RU' : 'EN'}
           </button>
         ))}
       </div>
