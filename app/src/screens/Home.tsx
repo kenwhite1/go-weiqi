@@ -14,21 +14,10 @@ export function Home() {
 
   return (
     <div className="home rise">
+      <div data-gg-pregame />
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6, marginBottom: 4 }}>
         {(['ru', 'en'] as const).map(l => (
-          <button
-            key={l}
-            onClick={() => setLang(l)}
-            aria-label={l === 'ru' ? 'Русский' : 'English'}
-            style={{
-              border: 'none', borderRadius: 999, padding: '5px 12px', cursor: 'pointer',
-              fontWeight: 800, fontSize: 13,
-              background: lang === l ? 'var(--accent, #2f9e6f)' : 'rgba(0,0,0,.08)',
-              color: lang === l ? '#fff' : 'var(--ink-soft, #6b5b45)',
-            }}
-          >
-            {l === 'ru' ? 'RU' : 'EN'}
-          </button>
+          null
         ))}
       </div>
       <div className="brand">
