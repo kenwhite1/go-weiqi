@@ -3,6 +3,7 @@ import { useStore } from '../store'
 import { Scene } from '../game/Scene'
 import { Board } from '../game/Board'
 import { t } from '../i18n'
+import { GGAvatar } from '../gg/GGAvatar'
 
 function fmt(ms: number): string {
   const s = Math.max(0, Math.ceil(ms / 1000))
@@ -74,6 +75,7 @@ export function Game() {
             {p.id === room.currentSeatId && playing && <span className="pl-turn-dot" />}
             <div className="pl-top">
               <span className={`stone-chip ${p.color}`} />
+              <span className="pl-ggav"><GGAvatar id={p.id} /></span>
               <span className="pl-name">{p.id === room.yourSeatId ? t('Ты') : p.name}</span>
             </div>
             <span className="pl-score">{p.captures}</span>

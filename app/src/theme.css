@@ -450,3 +450,7 @@ h2 { font-size: 19px; }
 .hub-invite-btn:active:not(:disabled), .hub-invite-all:active { transform: translateY(2px); box-shadow: none; }
 .hub-invite-all { width: 100%; margin-top: 2px; }
 @media (prefers-reduced-motion: reduce) { .hub-invite-open, .hub-invite-btn, .hub-invite-all { transition: none; } }
+
+/* Образ игрока из хаба рядом с цветом фигур (GGAvatar). Нет образа - нет места. */
+.pl-ggav { width: 22px; height: 22px; flex-shrink: 0; display: inline-block; }
+.pl-ggav:empty { display: none; }
