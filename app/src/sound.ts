@@ -1,11 +1,17 @@
+import { initGameVolume, getGameVolume, setGameVolume, subscribeGameVolume, gameAudioOutput, installGameVolume } from './gameVolume'
 // Крошечные синтезированные звуки через WebAudio: без файлов, работает офлайн.
 // Создаётся лениво при первом проигрывании (webview Telegram требует жеста).
 // Сухой «клак» камня по деревянной доске и шуршащий сметающий звук при взятии.
 let ctx: AudioContext | null = null
 let muted = localStorage.getItem('goMuted') === '1'
+initGameVolume(muted ? 0 : 1)
+muted = getGameVolume() === 0
+subscribeGameVolume(v => { muted = v === 0 })
+installGameVolume()
 
 export function isSoundOn(): boolean { return !muted }
 export function setSoundOn(on: boolean): void {
+  setGameVolume(on ? getGameVolume() || 1 : 0)
   muted = !on
   localStorage.setItem('goMuted', muted ? '1' : '0')
 }
@@ -28,7 +34,7 @@ function blip(c: AudioContext, freq: number, at: number, dur: number, type: Osci
   g.gain.setValueAtTime(0.0001, at)
   g.gain.exponentialRampToValueAtTime(peak, at + 0.01)
   g.gain.exponentialRampToValueAtTime(0.0001, at + dur)
-  o.connect(g); g.connect(c.destination)
+  o.connect(g); g.connect(gameAudioOutput(c))
   o.start(at); o.stop(at + dur + 0.02)
 }
 
@@ -47,7 +53,7 @@ function knock(c: AudioContext, at: number, freq = 2000, dur = 0.07, peak = 0.07
   f.type = 'bandpass'
   f.frequency.value = freq
   f.Q.value = 1.4
-  src.connect(f); f.connect(g); g.connect(c.destination)
+  src.connect(f); f.connect(g); g.connect(gameAudioOutput(c))
   src.start(at); src.stop(at + dur)
 }
 
